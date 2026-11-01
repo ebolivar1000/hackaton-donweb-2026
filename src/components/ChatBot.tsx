@@ -3,16 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
-  MessageSquare,
   X,
   Send,
   Bot,
   User,
-  Sparkles,
   Calendar,
   Minimize2,
   Maximize2,
   RefreshCw,
+  HeartHandshake,
 } from "lucide-react";
 
 interface Message {
@@ -20,16 +19,45 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   time: string;
-  provider?: string;
 }
 
 const QUICK_PROMPTS = [
-  "Tengo dolor en el pecho y palpitaciones",
-  "Tengo manchas y picazón en la piel",
-  "Pediatra disponible hoy para mi bebé",
-  "Dolor de rodilla por un golpe",
-  "¿Cuáles son los horarios de atención?",
+  "Dolor en el pecho o palpitaciones",
+  "Manchas o erupciones en la piel",
+  "Pediatra disponible para mi hijo",
+  "Dolor de rodilla o columna",
+  "Horarios de atención de la clínica",
+  "Quiero agendar un turno médico",
 ];
+
+// Helper to render bold text without raw asterisks
+function FormattedMessage({ text }: { text: string }) {
+  const lines = text.split("\n");
+  return (
+    <div className="space-y-1.5 leading-relaxed text-sm">
+      {lines.map((line, i) => {
+        if (!line.trim()) return <div key={i} className="h-1" />;
+        
+        // Match bold **text**
+        const parts = line.split(/(\*\*[^*]+\*\*)/g);
+        return (
+          <p key={i}>
+            {parts.map((part, j) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return (
+                  <strong key={j} className="font-bold text-slate-900">
+                    {part.slice(2, -2)}
+                  </strong>
+                );
+              }
+              return part;
+            })}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +69,7 @@ export default function ChatBot() {
       id: "welcome-1",
       role: "assistant",
       content:
-        "¡Hola! Soy **MediBot**, el asistente de inteligencia artificial de **MediConnect**. 🩺\n\nPuedo ayudarte a identificar la especialidad adecuada según tus síntomas, consultar doctores disponibles o resolver tus dudas las 24 horas.\n\n¿Qué síntomas o consulta tienes hoy?",
+        "¡Hola! Soy MediBot, el asistente de atención médica de MediConnect. 🩺\n\nPuedo orientarte según los síntomas que sientas, decirte qué doctores y horarios están disponibles o ayudarte a reservar un turno.\n\n¿Qué consulta o molestia tienes hoy?",
       time: "Ahora",
     },
   ]);
@@ -89,7 +117,6 @@ export default function ChatBot() {
         role: "assistant",
         content: data.reply || "Lo siento, tuve un inconveniente al procesar tu consulta. Por favor intenta de nuevo.",
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        provider: data.provider,
       };
 
       setMessages((prev) => [...prev, botMsg]);
@@ -97,7 +124,7 @@ export default function ChatBot() {
       const errorMsg: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: "Ocurrió un error al contactar al servicio de IA. Puedes comunicarte directamente al teléfono de la clínica o por WhatsApp.",
+        content: "Ocurrió un error momentáneo en la consulta. Puedes comunicarte directamente al teléfono de la clínica o por WhatsApp.",
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -118,13 +145,13 @@ export default function ChatBot() {
   };
 
   return (
-    <aside aria-label="Asistente Virtual" className="fixed bottom-6 right-6 z-50">
+    <aside aria-label="Asistente de Atención" className="fixed bottom-6 right-6 z-50">
       {/* Floating launcher badge */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           className="relative group flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-teal-600 to-emerald-600 text-white font-semibold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:scale-105 transition-all transform duration-200"
-          aria-label="Abrir Asistente IA"
+          aria-label="Abrir Asistente MediBot"
         >
           <span className="absolute -top-1 -right-1 flex h-4 w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -133,7 +160,7 @@ export default function ChatBot() {
           <Bot className="w-6 h-6 animate-pulse" />
           <div className="flex flex-col text-left">
             <span className="text-xs uppercase tracking-wider font-extrabold text-blue-100 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-300" /> IA Activa
+              <HeartHandshake className="w-3.5 h-3.5 text-cyan-300" /> MediBot
             </span>
             <span className="text-sm">Atención y Triage 24/7</span>
           </div>
@@ -145,8 +172,8 @@ export default function ChatBot() {
         <div
           className={`flex flex-col bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 ${
             isExpanded
-              ? "w-[92vw] sm:w-[600px] h-[85vh] max-h-[750px]"
-              : "w-[92vw] sm:w-[420px] h-[580px]"
+              ? "w-[92vw] sm:w-[620px] h-[85vh] max-h-[780px]"
+              : "w-[92vw] sm:w-[440px] h-[640px]"
           }`}
         >
           {/* Header */}
@@ -160,13 +187,13 @@ export default function ChatBot() {
               </div>
               <div>
                 <h3 className="font-bold text-base flex items-center gap-1.5 leading-tight">
-                  MediBot IA
-                  <span className="text-[10px] bg-emerald-500/30 border border-emerald-300/40 text-emerald-100 px-1.5 py-0.5 rounded-full font-normal">
-                    Online
+                  MediBot
+                  <span className="text-[10px] bg-emerald-500/30 border border-emerald-300/40 text-emerald-100 px-2 py-0.5 rounded-full font-medium">
+                    En línea
                   </span>
                 </h3>
                 <p className="text-xs text-blue-100">
-                  Triage clínico & asignación de turnos
+                  Orientación médica & asignación de turnos
                 </p>
               </div>
             </div>
@@ -218,15 +245,13 @@ export default function ChatBot() {
                   )}
 
                   <div
-                    className={`max-w-[85%] rounded-2xl p-3.5 shadow-sm text-sm ${
+                    className={`max-w-[85%] rounded-2xl p-3.5 shadow-sm ${
                       isAssistant
                         ? "bg-white text-slate-800 border border-slate-200/80 rounded-tl-none"
                         : "bg-blue-600 text-white rounded-tr-none"
                     }`}
                   >
-                    <div className="whitespace-pre-line leading-relaxed">
-                      {m.content}
-                    </div>
+                    <FormattedMessage text={m.content} />
 
                     <div
                       className={`text-[10px] mt-2 flex items-center justify-between gap-2 ${
@@ -234,11 +259,6 @@ export default function ChatBot() {
                       }`}
                     >
                       <span>{m.time}</span>
-                      {m.provider && (
-                        <span className="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">
-                          {m.provider}
-                        </span>
-                      )}
                     </div>
                   </div>
 
@@ -261,7 +281,7 @@ export default function ChatBot() {
                     <span className="w-2 h-2 rounded-full bg-blue-600 animate-bounce"></span>
                     <span className="w-2 h-2 rounded-full bg-teal-500 animate-bounce [animation-delay:0.2s]"></span>
                     <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.4s]"></span>
-                    <span className="text-xs text-slate-500 ml-2">Analizando síntomas con IA...</span>
+                    <span className="text-xs text-slate-500 ml-2">Orientando consulta médica...</span>
                   </div>
                 </div>
               </div>
@@ -270,18 +290,23 @@ export default function ChatBot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick prompts chips */}
-          <div className="px-3 py-2 bg-slate-100/90 border-t border-slate-200/70 overflow-x-auto whitespace-nowrap scrollbar-none flex gap-1.5 text-xs">
-            {QUICK_PROMPTS.map((prompt) => (
-              <button
-                key={prompt}
-                onClick={() => handleSend(prompt)}
-                disabled={loading}
-                className="px-2.5 py-1 rounded-full bg-white text-slate-700 border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-colors shadow-2xs shrink-0"
-              >
-                {prompt}
-              </button>
-            ))}
+          {/* Quick prompts chips - 6 options in 2 columns */}
+          <div className="px-3.5 py-2.5 bg-slate-100/90 border-t border-slate-200/80">
+            <p className="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
+              <span>Opciones rápidas de consulta:</span>
+            </p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {QUICK_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => handleSend(prompt)}
+                  disabled={loading}
+                  className="px-2.5 py-2 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50/50 transition-colors shadow-2xs text-left text-[11px] leading-tight font-medium"
+                >
+                  • {prompt}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Quick schedule action bar */}
