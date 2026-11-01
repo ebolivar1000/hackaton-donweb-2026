@@ -35,7 +35,6 @@ Instrucciones de formato:
 function intelligentMockTriage(userMessage: string) {
   const msg = userMessage.toLowerCase();
 
-  // Emergencias
   if (
     msg.includes("infarto") ||
     (msg.includes("pecho") && (msg.includes("fuerte") || msg.includes("brazo") || msg.includes("opresion"))) ||
@@ -51,7 +50,6 @@ Los síntomas que describes requieren atención inmediata. Por favor:
 *No te quedes esperando un turno programado.*`;
   }
 
-  // Triage por síntomas
   const matches: { specialtyId: string; score: number }[] = [];
 
   SPECIALTIES.forEach((spec) => {
@@ -89,7 +87,6 @@ ${docs
 Puedes reservar tu turno ahora mismo en la pestaña **Turnos Online** o escribiéndonos directamente por WhatsApp al [${CLINIC_INFO.whatsapp}](${CLINIC_INFO.whatsappUrl}).`;
   }
 
-  // Horarios o información general
   if (msg.includes("horario") || msg.includes("abierto") || msg.includes("atienden") || msg.includes("donde")) {
     return `🏥 **Información de atención MediConnect:**
 
@@ -102,7 +99,6 @@ Puedes reservar tu turno ahora mismo en la pestaña **Turnos Online** o escribi�
 ¿Te gustaría consultar por una especialidad o médico en particular?`;
   }
 
-  // Respuesta general de bienvenida y orientación
   return `¡Hola! Soy **MediBot**, el asistente de atención médica de **${CLINIC_INFO.name}**. 🩺✨
 
 Puedo ayudarte a resolver tus consultas de salud de forma inmediata:
@@ -123,17 +119,63 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Mensaje requerido" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const aiKey = process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || "";
 
-    if (apiKey && apiKey.trim() !== "" && !apiKey.includes("your-gemini")) {
+    // 1. If key is OpenAI (starts with sk-)
+    if (aiKey.startsWith("sk-")) {
       try {
-        const genAI = new GoogleGenerativeAI(apiKey);
+        const messagesPayload = [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...(Array.isArray(history)
+            ? history.slice(-6).map((h: { role: string; content: string }) => ({
+                role: h.role === "assistant" ? "assistant" : "user",
+                content: h.content,
+              }))
+            : []),
+          { role: "user", content: message },
+        ];
+
+        const openAiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${aiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: messagesPayload,
+            temperature: 0.7,
+            max_tokens: 600,
+          }),
+        });
+
+        if (openAiRes.ok) {
+          const data = await openAiRes.json();
+          const reply = data.choices?.[0]?.message?.content;
+          if (reply) {
+            return NextResponse.json({
+              reply,
+              provider: "OpenAI GPT-4o Mini (Live IA)",
+            });
+          }
+        } else {
+          const errText = await openAiRes.text();
+          console.warn("OpenAI API call returned error:", errText);
+        }
+      } catch (openAiErr) {
+        console.warn("OpenAI request error:", openAiErr);
+      }
+    }
+
+    // 2. If key is Google Gemini (starts with AIza)
+    if (aiKey.startsWith("AIza")) {
+      try {
+        const genAI = new GoogleGenerativeAI(aiKey);
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
           systemInstruction: SYSTEM_PROMPT,
         });
 
-        // Format history for Gemini chat if present
         const chat = model.startChat({
           history: Array.isArray(history)
             ? history.slice(-6).map((h: { role: string; content: string }) => ({
@@ -144,18 +186,16 @@ export async function POST(req: NextRequest) {
         });
 
         const result = await chat.sendMessage(message);
-        const text = result.response.text();
-
         return NextResponse.json({
-          reply: text,
-          provider: "Google Gemini 1.5 Flash (Live AI)",
+          reply: result.response.text(),
+          provider: "Google Gemini 1.5 Flash (Live IA)",
         });
       } catch (geminiError) {
-        console.warn("Gemini API call failed, falling back to local NLP triage:", geminiError);
+        console.warn("Gemini error:", geminiError);
       }
     }
 
-    // Fallback NLP intelligent triage (always works, fast, zero latency)
+    // 3. Fallback NLP Clinical Triage Engine
     const reply = intelligentMockTriage(message);
     return NextResponse.json({
       reply,
