@@ -42,145 +42,102 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-900 via-blue-800 to-slate-900 text-white pt-16 pb-24 lg:pt-20 lg:pb-32">
-        {/* Ambient background blur elements */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      {/* HERO SECTION - REFINED WITH MOODBOARD PREMIUM ART DIRECTION */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F5F7F5] via-[#EBF3F0] to-white text-slate-800 pt-12 pb-20 lg:pt-16 lg:pb-28 border-b border-slate-200/60">
+        {/* Ambient subtle blur glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#DCECE7]/60 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-10 w-80 h-80 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Column: Headlines & Call to Action */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-sm">
-                <Sparkles className="w-4 h-4 text-cyan-300" />
-                <span>Atención Médica Digital con IA Integrada</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#DCECE7] text-[#123C3A] border border-[#123C3A]/10 text-xs sm:text-sm font-semibold tracking-wide shadow-xs">
+                <Sparkles className="w-4 h-4 text-[#123C3A]" />
+                <span>Asistencia inteligente 24/7</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-                La nueva era en atención médica{" "}
-                <span className="bg-gradient-to-r from-teal-300 via-cyan-200 to-blue-200 bg-clip-text text-transparent">
-                  rápida, humana y sin demoras.
-                </span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#123C3A] leading-[1.12]">
+                Tu salud merece <br className="hidden sm:inline" />
+                una atención <span className="underline decoration-[#E5AE80] decoration-wavy decoration-2">sin esperas.</span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-blue-100/90 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-                Di adiós a esperar horas por WhatsApp o teléfono. Nuestro consultorio cuenta con{" "}
-                <strong className="text-white font-semibold">12 especialidades</strong>,{" "}
-                <strong className="text-white font-semibold">24 médicos de élite</strong> y un asistente de{" "}
-                <strong className="text-teal-300 font-semibold">IA que te orienta y agenda tu turno al instante</strong>.
+              <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                Encontrá especialistas, consultá disponibilidad y reservá tu turno desde cualquier dispositivo. Di adiós a esperar horas por WhatsApp o teléfono con nuestros <strong className="text-[#123C3A] font-semibold">24 médicos de élite</strong> y <strong className="text-[#123C3A] font-semibold">12 especialidades</strong>.
               </p>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
                 <Link
                   href="/turnos"
-                  className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-bold text-base shadow-lg shadow-teal-500/30 transition-all transform hover:-translate-y-0.5"
+                  className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-[#123C3A] hover:bg-[#1a4a47] text-white font-bold text-base shadow-lg shadow-[#123C3A]/25 transition-all transform hover:-translate-y-0.5"
                 >
-                  <Calendar className="w-5 h-5" />
-                  <span>Agendar Turno Online</span>
+                  <Calendar className="w-5 h-5 text-[#E5AE80]" />
+                  <span>Agendar mi turno</span>
+                  <ChevronRight className="w-4 h-4 text-[#DCECE7]" />
                 </Link>
 
                 <Link
-                  href="/especialidades"
-                  className="flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-base border border-white/20 backdrop-blur-md transition-all"
+                  href="/turnos"
+                  className="flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white hover:bg-[#DCECE7]/40 text-[#123C3A] font-semibold text-base border border-[#123C3A]/20 transition-all shadow-xs"
                 >
-                  <span>Conocer Especialidades</span>
-                  <ChevronRight className="w-4 h-4 text-blue-200" />
+                  <Bot className="w-5 h-5 text-[#123C3A]" />
+                  <span>Hablar con MediBot</span>
                 </Link>
               </div>
 
               {/* Trust Badges */}
-              <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-blue-700/50 text-xs text-blue-200 font-medium">
+              <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-200/80 text-xs text-slate-600 font-medium">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Sin esperas telefónicas</span>
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Guardia 24hs activa</span>
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start col-span-2 sm:col-span-1">
-                  <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Triage con IA clínico</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Interactive Card / Showcase */}
+            {/* Right Column: Modern Doctor Photo + Floating Live Appointment Card */}
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
-                {/* Main Card */}
-                <div className="rounded-3xl bg-white/95 text-slate-900 p-6 sm:p-8 shadow-2xl backdrop-blur-xl border border-white/30 space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-teal-500 flex items-center justify-center text-white shadow-md">
-                        <Bot className="w-7 h-7" />
-                      </div>
-                      <div>
-                        <h2 className="font-bold text-lg text-slate-800">
-                          Triage Médico MediBot
-                        </h2>
-                        <p className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                          Atendiendo consultas en tiempo real
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mock Conversation Preview */}
-                  <div className="space-y-3 text-xs sm:text-sm">
-                    <div className="bg-slate-100 rounded-2xl rounded-tl-none p-3.5 text-slate-700 border border-slate-200/60">
-                      <span className="font-semibold text-slate-900 block mb-1">
-                        ¿Qué te ocurre hoy?
-                      </span>
-                      &ldquo;Me duele el pecho cuando hago esfuerzo y tengo palpitaciones...&rdquo;
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200/80 rounded-2xl rounded-tr-none p-3.5 text-blue-900 space-y-2">
-                      <div className="flex items-center gap-1.5 text-blue-700 font-bold text-xs uppercase tracking-wider">
-                        <HeartPulse className="w-3.5 h-3.5 text-rose-500" />
-                        Recomendación IA: Cardiología
-                      </div>
-                      <p className="text-xs leading-relaxed text-slate-700">
-                        Te sugerimos consultar con el <strong>Dr. Martín Álvarez</strong> (Lunes, Miércoles, Viernes de 09 a 14hs).
-                      </p>
-                      <Link
-                        href="/turnos"
-                        className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:text-teal-900 underline"
-                      >
-                        Reservar turno con este especialista →
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Quick trigger to open chat */}
-                  <div className="pt-2">
-                    <p className="text-xs text-slate-500 text-center mb-3">
-                      ¿Tienes otro síntoma? Usa el asistente inteligente abajo a la derecha:
-                    </p>
-                    <Link
-                      href="/turnos"
-                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm transition-all shadow-md"
-                    >
-                      <Calendar className="w-4 h-4 text-teal-400" />
-                      Ir al Sistema de Turnos Directo
-                    </Link>
+                {/* Main Doctor Image */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                  <img
+                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=80"
+                    alt="Atención médica profesional MediConnect"
+                    className="w-full h-[400px] sm:h-[440px] object-cover object-top hover:scale-102 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#123C3A]/60 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white text-xs font-medium">
+                    <p className="font-bold text-sm">Dra. Lucía Fernández</p>
+                    <p className="text-[#DCECE7]">Especialista en Cardiología · MN 158.420</p>
                   </div>
                 </div>
 
-                {/* Floating badge */}
-                <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-2xl p-4 shadow-xl hidden sm:flex items-center gap-3">
-                  <Award className="w-8 h-8 text-amber-200 shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-teal-100">
-                      Calidad Médica
-                    </p>
-                    <p className="text-sm font-extrabold">
-                      +24 Médicos Especialistas
-                    </p>
+                {/* Floating Confirmed Appointment Card (Inspired by Moodboard) */}
+                <div className="absolute -bottom-6 -left-4 sm:-left-6 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-100 flex items-center gap-3.5 z-20">
+                  <div className="w-10 h-10 rounded-full bg-[#DCECE7] text-[#123C3A] flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                   </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#123C3A] flex items-center gap-1.5">
+                      Turno confirmado
+                    </p>
+                    <p className="text-xs font-semibold text-slate-800">Cardiología · Dr. Martín Álvarez</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Vie. 20 de Nov · 10:00 hs</p>
+                  </div>
+                </div>
+
+                {/* Floating Active Badge */}
+                <div className="absolute -top-3 -right-3 bg-[#123C3A] text-white rounded-2xl px-4 py-2 shadow-lg hidden sm:flex items-center gap-2 z-20">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-xs font-semibold">Guardia 24hs Activa</span>
                 </div>
               </div>
             </div>
@@ -188,29 +145,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS STRIP */}
-      <section className="bg-white border-b border-slate-200 py-10 shadow-sm relative z-10">
+      {/* QUICK STATS & CAPABILITIES STRIP (Matching Moodboard) */}
+      <section className="bg-white border-b border-slate-200/80 py-6 shadow-xs relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-4xl font-extrabold text-blue-700">12</p>
-              <p className="text-sm font-semibold text-slate-800">Especialidades Médicas</p>
-              <p className="text-xs text-slate-500">Cardiología, Pediatría y más</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center items-center">
+            <div className="flex items-center justify-center gap-3 text-slate-700">
+              <div className="w-10 h-10 rounded-full bg-[#DCECE7]/70 text-[#123C3A] flex items-center justify-center shrink-0">
+                <Stethoscope className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#123C3A]">12 Especialidades</p>
+                <p className="text-[11px] text-slate-500">De Cardiología a Salud Mental</p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-4xl font-extrabold text-teal-600">24</p>
-              <p className="text-sm font-semibold text-slate-800">Doctores Matriculados</p>
-              <p className="text-xs text-slate-500">Múltiples horarios semanales</p>
+            <div className="flex items-center justify-center gap-3 text-slate-700">
+              <div className="w-10 h-10 rounded-full bg-[#DCECE7]/70 text-[#123C3A] flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#123C3A]">+24 Profesionales</p>
+                <p className="text-[11px] text-slate-500">Médicos de élite matriculados</p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-4xl font-extrabold text-blue-700">24/7</p>
-              <p className="text-sm font-semibold text-slate-800">Atención con IA</p>
-              <p className="text-xs text-slate-500">Triage médico sin demoras</p>
+            <div className="flex items-center justify-center gap-3 text-slate-700">
+              <div className="w-10 h-10 rounded-full bg-[#DCECE7]/70 text-[#123C3A] flex items-center justify-center shrink-0">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#123C3A]">Turnos Online</p>
+                <p className="text-[11px] text-slate-500">Disponibilidad real en vivo</p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-4xl font-extrabold text-teal-600">99.4%</p>
-              <p className="text-sm font-semibold text-slate-800">Pacientes Satisfechos</p>
-              <p className="text-xs text-slate-500">Más de 50.000 turnos dados</p>
+            <div className="flex items-center justify-center gap-3 text-slate-700">
+              <div className="w-10 h-10 rounded-full bg-[#DCECE7]/70 text-[#123C3A] flex items-center justify-center shrink-0">
+                <Bot className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#123C3A]">Atención con IA</p>
+                <p className="text-[11px] text-slate-500">Triage médico sin demoras</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-3 text-slate-700 col-span-2 md:col-span-1">
+              <div className="w-10 h-10 rounded-full bg-[#DCECE7]/70 text-[#123C3A] flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5 text-[#E5AE80]" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#123C3A]">Barrio Norte</p>
+                <p className="text-[11px] text-slate-500">Av. Santa Fe 2450, CABA</p>
+              </div>
             </div>
           </div>
         </div>

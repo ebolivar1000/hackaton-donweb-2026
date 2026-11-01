@@ -125,10 +125,10 @@ export default function Navbar() {
             <div className="hidden sm:flex items-center space-x-3">
               <Link
                 href="/turnos"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-bold text-sm shadow-md shadow-teal-800/20 hover:from-teal-800 hover:to-emerald-700 hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#123C3A] hover:bg-[#1a4a47] text-white font-bold text-sm shadow-md shadow-[#123C3A]/20 transition-all transform hover:-translate-y-0.5"
               >
-                <Calendar className="w-4 h-4" />
-                <span>Agendar Turno</span>
+                <Calendar className="w-4 h-4 text-[#E5AE80]" />
+                <span>Reservar Turno</span>
               </Link>
             </div>
 

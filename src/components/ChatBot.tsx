@@ -22,12 +22,12 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-  "Dolor en el pecho o palpitaciones",
-  "Manchas o erupciones en la piel",
-  "Pediatra disponible para mi hijo",
-  "Dolor de rodilla o columna",
-  "Horarios de atención de la clínica",
-  "Quiero agendar un turno médico",
+  "Buscar un especialista",
+  "Consultar horarios",
+  "Reservar un turno",
+  "Información del centro",
+  "Dolor de pecho o palpitaciones",
+  "Pediatría y guardia 24hs",
 ];
 
 // Helper to render bold text without raw asterisks
@@ -75,6 +75,18 @@ export default function ChatBot() {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Expose open helper to window for CTA buttons
+    if (typeof window !== "undefined") {
+      (window as unknown as { __openMediBot?: () => void }).__openMediBot = () => setIsOpen(true);
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        delete (window as unknown as { __openMediBot?: () => void }).__openMediBot;
+      }
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -150,19 +162,19 @@ export default function ChatBot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="relative group flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-teal-600 to-emerald-600 text-white font-semibold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:scale-105 transition-all transform duration-200"
+          className="relative group flex items-center gap-3 px-5 py-3.5 rounded-full bg-[#123C3A] hover:bg-[#1a4a47] text-white font-semibold shadow-xl shadow-[#123C3A]/30 hover:shadow-2xl hover:scale-105 transition-all transform duration-200"
           aria-label="Abrir Asistente MediBot"
         >
           <span className="absolute -top-1 -right-1 flex h-4 w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
           </span>
-          <Bot className="w-6 h-6 animate-pulse" />
+          <Bot className="w-6 h-6 text-[#E5AE80]" />
           <div className="flex flex-col text-left">
-            <span className="text-xs uppercase tracking-wider font-extrabold text-blue-100 flex items-center gap-1">
-              <HeartHandshake className="w-3.5 h-3.5 text-cyan-300" /> MediBot
+            <span className="text-xs uppercase tracking-wider font-extrabold text-[#DCECE7] flex items-center gap-1">
+              <HeartHandshake className="w-3.5 h-3.5 text-[#E5AE80]" /> MediBot
             </span>
-            <span className="text-sm">Atención y Triage 24/7</span>
+            <span className="text-sm">Tu asistente de salud</span>
           </div>
         </button>
       )}
@@ -177,23 +189,23 @@ export default function ChatBot() {
           }`}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-teal-600 text-white p-4 flex items-center justify-between shadow-sm">
+          <div className="bg-[#123C3A] text-white p-4 flex items-center justify-between shadow-sm">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-[#E5AE80]" />
                 </div>
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-blue-700"></span>
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#123C3A]"></span>
               </div>
               <div>
-                <h3 className="font-bold text-base flex items-center gap-1.5 leading-tight">
+                <h3 className="font-bold text-base flex items-center gap-1.5 leading-tight text-white">
                   MediBot
-                  <span className="text-[10px] bg-emerald-500/30 border border-emerald-300/40 text-emerald-100 px-2 py-0.5 rounded-full font-medium">
-                    En línea
+                  <span className="text-[10px] bg-emerald-500/20 border border-emerald-300/30 text-emerald-200 px-2 py-0.5 rounded-full font-medium">
+                    Activo
                   </span>
                 </h3>
-                <p className="text-xs text-blue-100">
-                  Orientación médica & asignación de turnos
+                <p className="text-xs text-[#DCECE7]">
+                  Tu asistente de salud 🟢
                 </p>
               </div>
             </div>
