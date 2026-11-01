@@ -14,7 +14,14 @@ export async function POST(req: NextRequest) {
     }
 
     const agents = await getAgents();
-    const agent = agents.find((a) => a.id === agentId);
+    let targetId = agentId;
+    if (targetId === "gestor-turnos") targetId = "turnos";
+    if (targetId === "orientador-especialidades") targetId = "orientador";
+    if (targetId === "recepcionista-virtual") targetId = "recepcionista";
+    if (targetId === "seguimiento-recuperacion") targetId = "seguimiento";
+    if (targetId === "analista-administrativo") targetId = "analista";
+
+    const agent = agents.find((a) => a.id === targetId || a.id === agentId);
 
     if (!agent) {
       return NextResponse.json(

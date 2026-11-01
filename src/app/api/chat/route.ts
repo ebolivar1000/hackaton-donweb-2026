@@ -33,6 +33,10 @@ export async function POST(req: NextRequest) {
       reply: result.reply,
       agentId: result.agentId,
       agentName: result.agentName,
+      agent: {
+        id: result.agentId,
+        name: result.agentName,
+      },
       provider: result.provider,
       latencyMs: result.latencyMs,
       routedIntent: result.routedIntent,

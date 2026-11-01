@@ -18,15 +18,35 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
+  return handleUpdate(req);
+}
+
+export async function POST(req: NextRequest) {
+  return handleUpdate(req);
+}
+
+async function handleUpdate(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, active, systemPrompt, provider, model } = body;
+    let { id, active, systemPrompt, provider, model, status } = body;
 
     if (!id) {
       return NextResponse.json(
         { success: false, error: "ID de agente requerido" },
         { status: 400 }
       );
+    }
+
+    // Support alias IDs
+    if (id === "gestor-turnos") id = "turnos";
+    if (id === "orientador-especialidades") id = "orientador";
+    if (id === "recepcionista-virtual") id = "recepcionista";
+    if (id === "seguimiento-recuperacion") id = "seguimiento";
+    if (id === "analista-administrativo") id = "analista";
+
+    // Support status: "active" | "inactive"
+    if (active === undefined && status !== undefined) {
+      active = status === "active";
     }
 
     const updated = await updateAgent(id, {
