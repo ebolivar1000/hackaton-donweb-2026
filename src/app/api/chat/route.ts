@@ -111,6 +111,19 @@ Contamos con 12 especialidades: *Cardiología, Dermatología, Pediatría, Trauma
 ¿En qué puedo ayudarte hoy?`;
 }
 
+// GET handler so opening in browser doesn't return 405 Method Not Allowed
+export async function GET() {
+  return NextResponse.json({
+    service: "MediBot IA - API Endpoint",
+    status: "online",
+    model: process.env.OPENAI_API_KEY ? "OpenAI GPT-4o-mini (Live)" : "MediBot Triage Engine (Clínico)",
+    usage: "Envía una petición POST con { message: 'tus síntomas...' } o usa el widget flotante en la web.",
+    clinic: CLINIC_INFO.name,
+    specialtiesCount: SPECIALTIES.length,
+    doctorsCount: DOCTORS.length,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { message, history } = await req.json();
