@@ -21,7 +21,6 @@ export function getDbPool() {
   return pool;
 }
 
-// In-memory appointments fallback in case database table isn't created yet or connection fails
 export interface AppointmentRecord {
   id: string;
   patientName: string;
@@ -35,7 +34,7 @@ export interface AppointmentRecord {
   time: string;
   notes?: string;
   createdAt: string;
-  status: "confirmado" | "pendiente";
+  status: "confirmado" | "pendiente" | "cancelado";
 }
 
 declare global {
@@ -47,7 +46,24 @@ if (!global.__mediconnect_appointments) {
   global.__mediconnect_appointments = [];
 }
 
-export async function saveAppointment(app: Omit<AppointmentRecord, "id" | "createdAt" | "status">): Promise<AppointmentRecord> {
+export async function saveAppointment(
+  app: Omit<AppointmentRecord, "id" | "createdAt" | "status">
+): Promise<AppointmentRecord> {
+  // 1. Conflict Prevention Check in Memory
+  const memConflict = (global.__mediconnect_appointments || []).find(
+    (a) =>
+      a.doctorId === app.doctorId &&
+      a.date === app.date &&
+      a.time === app.time &&
+      a.status === "confirmado"
+  );
+
+  if (memConflict) {
+    throw new Error(
+      `El turno para el doctor seleccionado el día ${app.date} a las ${app.time} hs ya está reservado por otro paciente. Por favor selecciona otro horario.`
+    );
+  }
+
   const newAppointment: AppointmentRecord = {
     ...app,
     id: `MED-${Date.now().toString().slice(-6)}`,
@@ -57,7 +73,7 @@ export async function saveAppointment(app: Omit<AppointmentRecord, "id" | "creat
 
   try {
     const db = getDbPool();
-    // Try to create table if not exists
+    // Ensure table exists
     await db.query(`
       CREATE TABLE IF NOT EXISTS appointments (
         id VARCHAR(50) PRIMARY KEY,
@@ -75,6 +91,20 @@ export async function saveAppointment(app: Omit<AppointmentRecord, "id" | "creat
         status VARCHAR(20) DEFAULT 'confirmado'
       );
     `);
+
+    // 2. Strict Conflict Prevention Check in PostgreSQL
+    const existing = await db.query(
+      `SELECT id FROM appointments 
+       WHERE doctor_id = $1 AND appointment_date = $2 AND appointment_time = $3 AND status = 'confirmado'
+       LIMIT 1;`,
+      [app.doctorId, app.date, app.time]
+    );
+
+    if (existing.rows && existing.rows.length > 0) {
+      throw new Error(
+        `Conflicto de horario: El profesional ya cuenta con una cita confirmada el ${app.date} a las ${app.time} hs en PostgreSQL.`
+      );
+    }
 
     await db.query(
       `INSERT INTO appointments (id, patient_name, patient_email, patient_phone, doctor_id, doctor_name, specialty_id, specialty_name, appointment_date, appointment_time, notes, status)
@@ -95,10 +125,12 @@ export async function saveAppointment(app: Omit<AppointmentRecord, "id" | "creat
       ]
     );
   } catch (err) {
-    console.warn("Warning: Could not save to PostgreSQL, saving to in-memory store:", (err as Error).message);
+    if ((err as Error).message.includes("Conflicto") || (err as Error).message.includes("ya está reservado")) {
+      throw err;
+    }
+    console.warn("DB save warning (handled in-memory):", (err as Error).message);
   }
 
-  // Always keep in memory store as fallback
   global.__mediconnect_appointments!.unshift(newAppointment);
   return newAppointment;
 }
@@ -106,7 +138,7 @@ export async function saveAppointment(app: Omit<AppointmentRecord, "id" | "creat
 export async function getAppointments(): Promise<AppointmentRecord[]> {
   try {
     const db = getDbPool();
-    const res = await db.query("SELECT * FROM appointments ORDER BY created_at DESC LIMIT 50");
+    const res = await db.query("SELECT * FROM appointments ORDER BY created_at DESC LIMIT 100");
     if (res.rows && res.rows.length > 0) {
       return res.rows.map((r) => ({
         id: r.id,

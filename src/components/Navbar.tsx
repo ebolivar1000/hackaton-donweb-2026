@@ -12,6 +12,7 @@ import {
   X,
   MessageCircle,
   ShieldCheck,
+  Cpu,
 } from "lucide-react";
 import { CLINIC_INFO } from "@/lib/data";
 
@@ -29,17 +30,17 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full shadow-sm">
-      {/* Top emergency / quick contact bar */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-teal-800 text-white text-xs py-2 px-4">
+    <header className="sticky top-0 z-40 w-full shadow-sm font-sans">
+      {/* Top emergency / quick contact bar (Petrol green tone) */}
+      <div className="bg-[#0f2d2e] text-white text-xs py-2 px-4 border-b border-teal-900/60">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center space-x-4">
-            <span className="flex items-center gap-1.5 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="flex items-center gap-1.5 font-medium text-emerald-400">
+              <ShieldCheck className="w-3.5 h-3.5" />
               Guardia Médica 24hs activa
             </span>
-            <span className="hidden md:inline-block text-blue-200">|</span>
-            <span className="hidden md:flex items-center gap-1 text-blue-100">
+            <span className="hidden md:inline-block text-teal-800">|</span>
+            <span className="hidden md:flex items-center gap-1 text-teal-200/80">
               <Clock className="w-3.5 h-3.5" />
               {CLINIC_INFO.hours}
             </span>
@@ -47,9 +48,9 @@ export default function Navbar() {
           <div className="flex items-center space-x-4 font-medium">
             <a
               href={`tel:${CLINIC_INFO.phone}`}
-              className="flex items-center gap-1 hover:text-blue-200 transition-colors"
+              className="flex items-center gap-1 hover:text-teal-300 transition-colors"
             >
-              <Phone className="w-3 h-3 text-cyan-300" />
+              <Phone className="w-3 h-3 text-teal-400" />
               <span>{CLINIC_INFO.phone}</span>
             </a>
             <a
@@ -71,15 +72,15 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-teal-500 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                <HeartPulse className="w-6 h-6 text-white animate-pulse" />
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-teal-700 to-emerald-600 flex items-center justify-center shadow-md shadow-teal-700/20 group-hover:scale-105 transition-transform">
+                <HeartPulse className="w-6 h-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-teal-600 bg-clip-text text-transparent tracking-tight">
+                <span className="text-2xl font-extrabold bg-gradient-to-r from-[#0f2d2e] via-teal-800 to-emerald-700 bg-clip-text text-transparent tracking-tight">
                   MediConnect
                 </span>
-                <span className="text-[10px] tracking-wider uppercase font-semibold text-slate-400">
-                  Centro Médico & IA
+                <span className="text-[10px] tracking-wider uppercase font-bold text-teal-700">
+                  Centro Médico
                 </span>
               </div>
             </Link>
@@ -92,23 +93,39 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                       isActive
-                        ? "text-blue-700 bg-blue-50 font-semibold"
-                        : "text-slate-600 hover:text-blue-600 hover:bg-slate-50"
+                        ? "text-teal-800 bg-teal-50"
+                        : "text-slate-600 hover:text-teal-700 hover:bg-slate-50"
                     }`}
                   >
                     {link.name}
                   </Link>
                 );
               })}
+
+              {/* Centro de IA Admin Link */}
+              <Link
+                href="/centro-ia"
+                className={`ml-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                  pathname === "/centro-ia"
+                    ? "bg-teal-900 text-teal-200 border-teal-700"
+                    : "bg-[#0f2d2e]/5 text-teal-900 border-teal-800/20 hover:bg-[#0f2d2e] hover:text-white"
+                }`}
+              >
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Centro de IA</span>
+                <span className="text-[9px] bg-teal-600 text-white px-1.5 py-0.2 rounded font-extrabold">
+                  Admin
+                </span>
+              </Link>
             </div>
 
             {/* CTA action */}
             <div className="hidden sm:flex items-center space-x-3">
               <Link
                 href="/turnos"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white font-medium text-sm shadow-md shadow-blue-600/20 hover:from-blue-700 hover:to-teal-700 hover:shadow-lg hover:shadow-blue-600/30 transition-all transform hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-bold text-sm shadow-md shadow-teal-800/20 hover:from-teal-800 hover:to-emerald-700 hover:shadow-lg transition-all transform hover:-translate-y-0.5"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Agendar Turno</span>
@@ -119,7 +136,7 @@ export default function Navbar() {
             <div className="flex lg:hidden items-center">
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="p-2 rounded-lg text-slate-600 hover:text-blue-600 hover:bg-slate-100 transition-colors"
+                className="p-2 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-colors"
                 aria-label="Abrir menú"
               >
                 {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -138,9 +155,9 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-4 py-2.5 rounded-lg text-base font-medium ${
+                  className={`block px-4 py-2.5 rounded-lg text-base font-semibold ${
                     isActive
-                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      ? "text-teal-800 bg-teal-50"
                       : "text-slate-700 hover:bg-slate-50"
                   }`}
                 >
@@ -148,11 +165,23 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            <Link
+              href="/centro-ia"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-bold bg-teal-900 text-teal-200"
+            >
+              <span className="flex items-center gap-2">
+                <Cpu className="w-4 h-4" /> Centro de IA (Admin SaaS)
+              </span>
+              <span className="text-[10px] bg-teal-600 text-white px-2 py-0.5 rounded">
+                Admin
+              </span>
+            </Link>
             <div className="pt-2">
               <Link
                 href="/turnos"
                 onClick={() => setMobileOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white font-semibold shadow-md"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-bold shadow-md"
               >
                 <Calendar className="w-5 h-5" />
                 Agendar Turno Online

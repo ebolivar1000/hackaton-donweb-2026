@@ -35,6 +35,7 @@ function TurnosForm() {
   const [patientEmail, setPatientEmail] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{
@@ -86,8 +87,9 @@ function TurnosForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     if (!selectedDoctor || !selectedDate || !selectedTime || !patientName || !patientEmail || !patientPhone) {
-      alert("Por favor completa todos los campos obligatorios.");
+      setErrorMsg("Por favor completa todos los campos obligatorios.");
       return;
     }
 
@@ -119,10 +121,10 @@ function TurnosForm() {
         });
         setStep(5); // Success confirmation
       } else {
-        alert("Error al guardar el turno: " + data.error);
+        setErrorMsg(data.error || "No fue posible agendar el turno. Por favor intenta otro horario.");
       }
     } catch (err) {
-      alert("Error de conexión. Intente nuevamente.");
+      setErrorMsg("Error de conexión al servidor PostgreSQL. Intente nuevamente.");
     } finally {
       setSubmitting(false);
     }
@@ -369,6 +371,18 @@ function TurnosForm() {
               <p>💵 <strong>Arancel:</strong> {selectedDoctor?.price}</p>
             </div>
           </div>
+
+          {errorMsg && (
+            <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl text-amber-900 text-xs flex items-start gap-2.5 shadow-sm">
+              <span className="font-bold text-base">⚠️</span>
+              <div className="space-y-1">
+                <p className="font-bold">{errorMsg}</p>
+                <p className="text-amber-800">
+                  Por favor regresa al paso 3 para seleccionar otro horario disponible.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Form fields */}
           <div className="space-y-4">
